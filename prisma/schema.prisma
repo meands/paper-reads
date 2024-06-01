@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model article_store {
+  id                Int                 @id @default(autoincrement())
+  title             String?             @db.VarChar(100)
+  doi               String?             @db.VarChar(50)
+  author            String?             @db.VarChar(100)
+  link              String?             @db.VarChar(100)
+  currently_reading currently_reading[]
+  finished_reading  finished_reading[]
+  want_to_read      want_to_read[]
+}
+
+model currently_reading {
+  id            Int
+  start_date    DateTime?     @db.Date
+  recordid      Int           @id @default(autoincrement())
+  article_store article_store @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model finished_reading {
+  id            Int
+  review        String?
+  rating        Int?
+  recordid      Int           @id @default(autoincrement())
+  article_store article_store @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model want_to_read {
+  id            Int
+  note          String?
+  recordid      Int           @id @default(autoincrement())
+  article_store article_store @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
