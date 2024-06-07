@@ -2,7 +2,7 @@ import { Modal } from "@/components/modal";
 import {
   getAllArticleStoreRecords,
   getCurrentlyReadingRecords,
-} from "@/pages/api/dbActions";
+} from "../../actions";
 import AddNew, { AddCurrentlyReadingForm } from "../addnew";
 
 export default async function AddCurrentlyReading() {

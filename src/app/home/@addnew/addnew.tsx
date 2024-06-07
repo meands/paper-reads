@@ -4,14 +4,9 @@ import {
   addItemToCurrentlyReading,
   addItemToFinishedReading,
   addItemToWantToRead,
-  searchForArticle,
+  searchForArticles,
 } from "../actions";
-import {
-  article_store,
-  currently_reading,
-  finished_reading,
-  want_to_read,
-} from "@prisma/client";
+import { article_store } from "@prisma/client";
 
 export default function AddNew({
   title,
@@ -21,8 +16,7 @@ export default function AddNew({
 }: {
   title: string;
   articles: article_store[];
-  listArticles: ((want_to_read | currently_reading | finished_reading) &
-    article_store)[];
+  listArticles: article_store[];
   formRenderer: ({ options }: { options: article_store[] }) => JSX.Element;
 }) {
   const [options, setOptions] = useState<article_store[]>(articles);
@@ -33,7 +27,7 @@ export default function AddNew({
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          const searchResults = await searchForArticle(
+          const searchResults = await searchForArticles(
             new FormData(e.target as HTMLFormElement).get("search") as string
           );
           setOptions(searchResults);
@@ -52,7 +46,8 @@ export default function AddNew({
       </form>
       <Form
         options={options.filter(
-          (article) => !listArticles.find((c) => c.id === article.id)
+          (article) =>
+            !listArticles.find((c) => c.recordid === article.recordid)
         )}
       />
     </div>
@@ -65,10 +60,7 @@ export function AddWantToReadForm({ options }: { options: article_store[] }) {
       onSubmit={(e) => {
         e.preventDefault();
         const data = new FormData(e.target as HTMLFormElement);
-        addItemToWantToRead(
-          parseInt(data.get("article") as string),
-          data.get("note") as string
-        );
+        addItemToWantToRead(parseInt(data.get("article") as string));
       }}
       style={{
         display: "flex",
@@ -80,13 +72,11 @@ export function AddWantToReadForm({ options }: { options: article_store[] }) {
       }}
     >
       {options.map((article) => (
-        <div key={article.id}>
-          <input type="radio" name="article" value={article.id} />
+        <div key={article.recordid}>
+          <input type="radio" name="article" value={article.recordid} />
           <label htmlFor="article">{article.title}</label>
         </div>
       ))}
-      <label htmlFor="note">Note</label>
-      <input placeholder="make a note" name="note" />
       <button type="submit">Submit</button>
     </form>
   );
@@ -117,8 +107,8 @@ export function AddCurrentlyReadingForm({
       }}
     >
       {options.map((article) => (
-        <div key={article.id}>
-          <input type="radio" name="article" value={article.id} />
+        <div key={article.recordid}>
+          <input type="radio" name="article" value={article.recordid} />
           <label htmlFor="article">{article.title}</label>
         </div>
       ))}
@@ -141,6 +131,7 @@ export function AddFinishedReadingForm({
         const data = new FormData(e.target as HTMLFormElement);
         addItemToFinishedReading(
           parseInt(data.get("article") as string),
+          data.get("date") as string,
           data.get("review") as string,
           parseInt(data.get("rating") as string)
         );
@@ -155,11 +146,14 @@ export function AddFinishedReadingForm({
       }}
     >
       {options.map((article) => (
-        <div key={article.id}>
-          <input type="radio" name="article" value={article.id} />
+        <div key={article.recordid}>
+          <input type="radio" name="article" value={article.recordid} />
           <label htmlFor="article">{article.title}</label>
         </div>
       ))}
+      <label htmlFor="date">Start Date</label>
+      <input placeholder="yyyy-mm-dd" name="date" />
+
       <label htmlFor="review">Review</label>
       <input placeholder="review" name="review" />
 

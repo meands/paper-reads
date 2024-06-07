@@ -8,34 +8,82 @@ datasource db {
 }
 
 model article_store {
-  id                Int                 @id @default(autoincrement())
-  title             String?             @db.VarChar(100)
-  doi               String?             @db.VarChar(50)
-  author            String?             @db.VarChar(100)
-  link              String?             @db.VarChar(100)
-  currently_reading currently_reading[]
-  finished_reading  finished_reading[]
-  want_to_read      want_to_read[]
+  recordid              Int                     @id @default(autoincrement())
+  title                 String
+  author                String
+  doi                   String
+  publication_date      DateTime?               @default(now()) @db.Timestamp(6)
+  review_comment        review_comment[]
+  user_article_activity user_article_activity[]
+  user_reads            user_reads[]
+  user_reads_notes      user_reads_notes[]
 }
 
-model currently_reading {
-  id            Int
-  start_date    DateTime?     @db.Date
-  recordid      Int           @id @default(autoincrement())
-  article_store article_store @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model user_info {
+  user_id                                            Int                     @id @default(autoincrement())
+  username                                           String
+  password                                           String
+  display_name                                       String?
+  bio                                                String?
+  profile_pic                                        String?
+  date_joined                                        DateTime?               @default(now()) @db.Timestamp(6)
+  review_comment                                     review_comment[]
+  user_article_activity                              user_article_activity[]
+  user_reads                                         user_reads[]
+  user_reads_notes                                   user_reads_notes[]
+  user_relations_user_relations_from_userTouser_info user_relations[]        @relation("user_relations_from_userTouser_info")
+  user_relations_user_relations_to_userTouser_info   user_relations[]        @relation("user_relations_to_userTouser_info")
 }
 
-model finished_reading {
-  id            Int
-  review        String?
-  rating        Int?
-  recordid      Int           @id @default(autoincrement())
-  article_store article_store @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model user_reads {
+  user_id        Int
+  article_id     Int
+  status         String
+  rating         Int?
+  review         String?
+  date_started   DateTime?     @db.Timestamp(6)
+  date_completed DateTime?     @db.Timestamp(6)
+  article_store  article_store @relation(fields: [article_id], references: [recordid], onDelete: NoAction, onUpdate: NoAction)
+  user_info      user_info     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, article_id])
 }
 
-model want_to_read {
-  id            Int
-  note          String?
-  recordid      Int           @id @default(autoincrement())
-  article_store article_store @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model review_comment {
+  record_id           Int           @id @default(autoincrement())
+  author_id           Int
+  article_id          Int
+  comment             String
+  published_timestamp DateTime      @default(now()) @db.Timestamp(6)
+  article_store       article_store @relation(fields: [article_id], references: [recordid], onDelete: NoAction, onUpdate: NoAction)
+  user_info           user_info     @relation(fields: [author_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user_article_activity {
+  record_id     Int           @id @default(autoincrement())
+  user_id       Int
+  article_id    Int
+  activity_type String
+  created_at    DateTime      @default(now()) @db.Timestamp(6)
+  article_store article_store @relation(fields: [article_id], references: [recordid], onDelete: NoAction, onUpdate: NoAction)
+  user_info     user_info     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user_reads_notes {
+  record_id           Int           @id @default(autoincrement())
+  user_id             Int
+  article_id          Int
+  note                String
+  published_timestamp DateTime      @default(now()) @db.Timestamp(6)
+  article_store       article_store @relation(fields: [article_id], references: [recordid], onDelete: NoAction, onUpdate: NoAction)
+  user_info           user_info     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user_relations {
+  relation_id                                   Int       @id @default(autoincrement())
+  from_user                                     Int
+  to_user                                       Int
+  created_at                                    DateTime? @default(now()) @db.Timestamp(6)
+  user_info_user_relations_from_userTouser_info user_info @relation("user_relations_from_userTouser_info", fields: [from_user], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+  user_info_user_relations_to_userTouser_info   user_info @relation("user_relations_to_userTouser_info", fields: [to_user], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
 }

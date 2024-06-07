@@ -1,8 +1,5 @@
 import { Modal } from "@/components/modal";
-import {
-  getAllArticleStoreRecords,
-  getWantToReadRecords,
-} from "@/pages/api/dbActions";
+import { getAllArticleStoreRecords, getWantToReadRecords } from "../../actions";
 import AddNew, { AddWantToReadForm } from "../addnew";
 
 export default async function AddWantToRead() {

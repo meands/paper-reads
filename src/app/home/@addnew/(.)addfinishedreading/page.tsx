@@ -2,7 +2,7 @@ import { Modal } from "@/components/modal";
 import {
   getAllArticleStoreRecords,
   getFinishedReadingRecords,
-} from "@/pages/api/dbActions";
+} from "../../actions";
 import AddNew, { AddFinishedReadingForm } from "../addnew";
 
 export default async function AddFinishedReading() {

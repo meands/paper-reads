@@ -1,8 +1,7 @@
-import { getWantToReadRecords } from "@/pages/api/dbActions";
+import { getWantToReadRecords, removeItemFromUserReads } from "../actions";
 import styles from "./page.module.css";
 import Link from "next/link";
 import { ArticleItem } from "@/components/item";
-import { removeItemFromWantToRead } from "../actions";
 
 export default async function WantToRead() {
   const availableArticles = await getWantToReadRecords();
@@ -19,8 +18,7 @@ export default async function WantToRead() {
             paddingBottom: 10,
           }}
         >
-          <ArticleItem item={item} onRemove={removeItemFromWantToRead} />
-          <span>Note: {item.note}</span>
+          <ArticleItem item={item} onRemove={removeItemFromUserReads} />
         </div>
       ))}
       <Link href="./addwant2read">+ Add New Item</Link>
