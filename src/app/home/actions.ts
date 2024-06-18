@@ -288,3 +288,13 @@ export async function getFinishedReadingRecords() {
   });
   return res;
 }
+
+export async function getRandomArticles(randomCount: number) {
+  const count = await prisma.article_store.count();
+  const skip = Math.max(0, Math.floor(Math.random() * count) - randomCount);
+
+  return prisma.article_store.findMany({
+    take: randomCount,
+    skip: skip,
+  });
+}

@@ -1,17 +1,13 @@
-import styles from "./page.module.css";
 import CurrentlyReading from "./currentlyreading/page";
 import WantToRead from "./want2read/page";
 import FinishedReading from "./finishedreading/page";
 
-export default async function MySpace() {
+export default async function Home() {
   return (
-    <div className={styles.main}>
-      <h1 style={{ paddingBottom: 30 }}>Home</h1>
-      <div className={styles.lists}>
-        <WantToRead />
-        <CurrentlyReading />
-        <FinishedReading />
-      </div>
+    <div className="container flex flex-row pt-14">
+      <WantToRead />
+      <CurrentlyReading />
+      <FinishedReading />
     </div>
   );
 }
