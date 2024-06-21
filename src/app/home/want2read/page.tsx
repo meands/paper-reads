@@ -1,21 +1,29 @@
-import { getWantToReadRecords, removeItemFromUserReads } from "../actions";
+import {
+  getAllArticleStoreRecords,
+  getWantToReadRecords,
+  removeItemFromUserReads,
+} from "../actions";
 import Link from "next/link";
-import { ArticleItem } from "@/components/item";
 import { Button } from "@/components/ui/button";
+import { WantToReadModal } from "./newItemForm";
+import { ArticleItem } from "@/components/articleItem";
 
 export default async function WantToRead() {
-  const availableArticles = await getWantToReadRecords();
+  const wantToReadArticles = await getWantToReadRecords();
+  const availableArticles = await getAllArticleStoreRecords();
+
   return (
-    <div className="container">
+    <div className="overflow-auto">
       <Button asChild variant="ghost" className="w-full">
         <Link href="./want2read">Want to Read</Link>
       </Button>
-      {availableArticles.map((item) => (
+      {wantToReadArticles.map((item) => (
         <ArticleItem item={item} onRemove={removeItemFromUserReads} />
       ))}
-      <Button asChild variant="ghost" className="w-full">
-        <Link href="./addwant2read">+ Add New Item</Link>
-      </Button>
+      <WantToReadModal
+        articles={availableArticles}
+        listArticles={wantToReadArticles}
+      />
     </div>
   );
 }

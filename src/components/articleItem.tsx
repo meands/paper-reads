@@ -16,12 +16,15 @@ export function ArticleItem({
   return (
     <div className="flex flex-row justify-between items-center border-t-2 border-b-2">
       <Button asChild variant="ghost">
-        <Link href={`../read/${item.recordid}`} className="hover:bg-slate-100">
+        <Link
+          href={`../read/${item.recordid}`}
+          className="text-wrap hover:bg-slate-100"
+        >
           {item.title}
         </Link>
       </Button>
       <Button variant="ghost" onClick={() => onRemove(item.recordid)}>
-        Remove
+        -
       </Button>
     </div>
   );

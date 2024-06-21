@@ -4,7 +4,7 @@ import FinishedReading from "./finishedreading/page";
 
 export default async function Home() {
   return (
-    <div className="container flex flex-row pt-14">
+    <div className="w-full flex flex-row justify-between p-14">
       <WantToRead />
       <CurrentlyReading />
       <FinishedReading />
