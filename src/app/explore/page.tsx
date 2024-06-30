@@ -1,4 +1,4 @@
-import { getRandomArticles } from "../home/actions";
+import { getRandomArticles } from "@/utils/actions";
 import { ShuffleBtn } from "./shuffle";
 
 export default async function Explore() {

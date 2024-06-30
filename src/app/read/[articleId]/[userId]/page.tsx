@@ -1,5 +1,5 @@
-import { CURRENT_USER } from "@/app/constants/user";
-import { getArticleWithNotes } from "@/app/home/actions";
+import { CURRENT_USER } from "@/constants/user";
+import { getArticleWithNotes } from "@/utils/actions";
 import React from "react";
 
 export default async function ArticlePage({

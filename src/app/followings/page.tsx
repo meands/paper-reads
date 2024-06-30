@@ -1,7 +1,7 @@
 import React from "react";
-import { getFollowings } from "../home/actions";
+import { getFollowings } from "@/utils/actions";
 import Link from "next/link";
-import { CURRENT_USER } from "../constants/user";
+import { CURRENT_USER } from "../../constants/user";
 import { Button } from "@/components/ui/button";
 import { ViewActivity } from "./viewActivity";
 

@@ -1,4 +1,4 @@
-import { getArticle } from "@/app/home/actions";
+import { getArticle } from "@/utils/actions";
 import React from "react";
 
 export default async function ArticlePage({

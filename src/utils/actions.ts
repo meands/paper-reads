@@ -2,7 +2,7 @@
 import { revalidatePath } from "next/cache";
 import prisma from "@/index";
 import { activity_type, article_state } from "@/types/article";
-import { CURRENT_USER } from "../constants/user";
+import { CURRENT_USER } from "@/constants/user";
 
 export async function addItemToCurrentlyReading(id: number, date?: string) {
   const res = await prisma.user_reads.upsert({
@@ -30,7 +30,7 @@ export async function addItemToCurrentlyReading(id: number, date?: string) {
       user_id: CURRENT_USER,
     },
   });
-  revalidatePath("/home");
+  revalidatePath("/myLists");
 }
 
 export async function addItemToWantToRead(id: number) {
@@ -57,7 +57,7 @@ export async function addItemToWantToRead(id: number) {
       user_id: CURRENT_USER,
     },
   });
-  revalidatePath("/home");
+  revalidatePath("/myLists");
 }
 
 export async function addItemToFinishedReading(
@@ -88,7 +88,7 @@ export async function addItemToFinishedReading(
       },
     },
   });
-  revalidatePath("/home");
+  revalidatePath("/myLists");
 }
 
 export async function removeItemFromUserReads(id: number) {
@@ -100,7 +100,7 @@ export async function removeItemFromUserReads(id: number) {
       },
     },
   });
-  revalidatePath("/home");
+  revalidatePath("/myLists");
 }
 
 export async function searchForArticles(name: string) {
@@ -232,6 +232,9 @@ export async function getCurrentlyReadingRecords() {
       doi: true,
       publication_date: true,
       user_reads_notes: true,
+    },
+    orderBy: {
+      title: "asc",
     },
   });
   return res;

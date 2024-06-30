@@ -1,5 +1,5 @@
-import { CURRENT_USER } from "../constants/user";
-import { getFollowingActivity } from "../home/actions";
+import { CURRENT_USER } from "../../constants/user";
+import { getFollowingActivity } from "@/utils/actions";
 
 export default async function Activity() {
   const activity = await getFollowingActivity(CURRENT_USER);

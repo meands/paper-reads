@@ -1,4 +1,4 @@
-import { getArticle, getFullUserInfo } from "@/app/home/actions";
+import { getArticle, getFullUserInfo } from "@/utils/actions";
 import { article_state } from "@/types/article";
 import { user_reads } from "@prisma/client";
 import Link from "next/link";

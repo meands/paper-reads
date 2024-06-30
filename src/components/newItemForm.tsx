@@ -12,20 +12,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { SearchArticle } from "@/components/searchArticle";
 import { Checkbox } from "@/components/ui/checkbox";
-import { searchForArticles } from "@/app/home/actions";
+import { searchForArticles } from "@/utils/actions";
 
 export function NewItemForm<
   T extends FieldValues | { [x: string]: any } | undefined
 >({
   defaultValues,
   articles,
-  listArticles,
+  selectedArticles,
   onSubmit,
   fields,
 }: {
   defaultValues: T;
   articles: article_store[];
-  listArticles: article_store[];
+  selectedArticles: article_store[];
   onSubmit: (values: T) => void;
   fields: {
     name: string;
@@ -45,7 +45,7 @@ export function NewItemForm<
     <div className="flex flex-col gap-4">
       <SearchArticle
         articles={articles}
-        selectedArticles={listArticles}
+        selectedArticles={selectedArticles}
         handleSearch={async (values: { articleName: ""; articleDoi: "" }) => {
           const searchResults = await searchForArticles(values.articleName);
           setOptions(searchResults);
@@ -68,7 +68,7 @@ export function NewItemForm<
                   {options
                     .filter(
                       (option) =>
-                        !listArticles.find(
+                        !selectedArticles.find(
                           (article) => article.title === option.title
                         )
                     )
@@ -112,6 +112,52 @@ export function NewItemForm<
               </FormItem>
             )}
           />
+          {fields.map((field) => {
+            return (
+              <FormField
+                control={form.control}
+                name={field.name}
+                render={field.Renderer}
+              />
+            );
+          })}
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
+    </div>
+  );
+}
+
+export function BasicForm<
+  T extends FieldValues | { [x: string]: any } | undefined
+>({
+  defaultValues,
+  onSubmit,
+  fields,
+}: {
+  defaultValues: T;
+  onSubmit: (values: T) => void;
+  fields: {
+    name: string;
+    Renderer: ({
+      field,
+    }: {
+      field: ControllerRenderProps<FieldValues, string>;
+    }) => JSX.Element;
+  }[];
+}) {
+  const form = useForm({
+    defaultValues: defaultValues,
+  });
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Form {...form}>
+        <form
+          // TODO: fix type
+          onSubmit={form.handleSubmit(onSubmit as any)}
+          className="flex flex-col gap-2"
+        >
           {fields.map((field) => {
             return (
               <FormField

@@ -1,5 +1,5 @@
 "use client";
-import { addItemToCurrentlyReading } from "../actions";
+import { addItemToCurrentlyReading } from "@/utils/actions";
 import { article_store } from "@prisma/client";
 import { FormControl, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -10,35 +10,30 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const formFields = {
   articles: [] as number[],
   startDate: "",
 } as const;
 
-export function AddCurrentlyReadingModal({
+export function AddToCurrentlyReadingModal({
   articles,
-  listArticles,
+  selectedArticles,
 }: {
   articles: article_store[];
-  listArticles: article_store[];
+  selectedArticles: article_store[];
 }) {
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <Button variant="ghost" className="w-full" onClick={() => setOpen(true)}>
-        +
-      </Button>
-      <DialogContent>
-        <DialogTitle>Add New Article</DialogTitle>
+    <Dialog defaultOpen>
+      <DialogContent onClose={router.back} onInteractOutside={router.back}>
+        <DialogTitle>Add to Currently Reading</DialogTitle>
         <DialogDescription>
-          <CurrentlyReadingForm
+          <AddToCurrentlyReadingForm
             articles={articles}
-            listArticles={listArticles}
-            closeModal={() => setOpen(false)}
+            selectedArticles={selectedArticles}
           />
         </DialogDescription>
       </DialogContent>
@@ -46,25 +41,25 @@ export function AddCurrentlyReadingModal({
   );
 }
 
-function CurrentlyReadingForm({
+function AddToCurrentlyReadingForm({
   articles,
-  listArticles,
-  closeModal,
+  selectedArticles,
 }: {
   articles: article_store[];
-  listArticles: article_store[];
-  closeModal: () => void;
+  selectedArticles: article_store[];
 }) {
+  const router = useRouter();
+
   return (
     <NewItemForm
       defaultValues={formFields}
       articles={articles}
-      listArticles={listArticles}
-      onSubmit={(values: typeof formFields) => {
-        values.articles.forEach(async (article) => {
+      selectedArticles={selectedArticles}
+      onSubmit={async (values: typeof formFields) => {
+        for (const article of values.articles) {
           await addItemToCurrentlyReading(article, values.startDate);
-        });
-        closeModal();
+        }
+        router.back();
       }}
       fields={[
         {
